@@ -1,0 +1,3 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up():void{Schema::create('hearings',function(Blueprint $t){$t->id();$t->foreignId('case_id')->constrained('cases')->cascadeOnDelete();$t->dateTime('hearing_date');$t->string('court_room')->nullable();$t->string('purpose')->nullable();$t->text('outcome')->nullable();$t->date('next_date')->nullable();$t->string('status')->default('scheduled');$t->timestamps();});}public function down():void{Schema::dropIfExists('hearings');}};

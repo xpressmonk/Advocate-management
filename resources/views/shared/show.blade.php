@@ -1,0 +1,1 @@
+@extends('layouts.app') @section('heading',$title) @section('content')<div class="card"><h1 class="text-2xl font-bold mb-4">{{ $title }}</h1><dl class="grid md:grid-cols-2 gap-4">@foreach($item->getAttributes() as $k=>$v)<div><dt class="text-xs uppercase text-slate-500">{{ str_replace('_',' ',$k) }}</dt><dd>{{ $v ?: '—' }}</dd></div>@endforeach</dl></div>@endsection
