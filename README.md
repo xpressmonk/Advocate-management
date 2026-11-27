@@ -46,6 +46,10 @@ The following modules still need implementation:
 
 **Important:** This is an initial runnable MVP source scaffold, not yet a complete production-ready legal management system. Add policies and private file storage before entering confidential client data. Tailwind is loaded from CDN for quick evaluation; compile assets with Vite for production.
 
+## cPanel deployment
+
+Use PHP 8.2 or newer and configure the domain's document root to point to this project's `public/` directory. The `public/.htaccess` file routes application requests through Laravel and disables directory listings. Keep the rest of the project, including `.env`, `vendor/`, and `storage/`, outside the web root. Ensure `storage/` and `bootstrap/cache/` are writable by the PHP process.
+
 
 ## Google Drive case-document integration
 
