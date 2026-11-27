@@ -32,28 +32,30 @@
                 <tbody>
                     @foreach($users as $user)
                         <tr>
-                            <form method="POST" action="{{ route('users.update', $user) }}">
+                            <td>
+                                <form id="user-update-{{ $user->id }}" method="POST" action="{{ route('users.update', $user) }}">
                                 @csrf @method('PUT')
-                                <td><input class="field min-w-40" name="name" value="{{ $user->name }}" required></td>
-                                <td><input class="field min-w-52" type="email" name="email" value="{{ $user->email }}" required></td>
-                                <td>
-                                    <select class="field min-w-32" name="role" required>
-                                        @foreach($roles as $role)
-                                            <option value="{{ $role->id }}" @selected($user->role_id === $role->id)>{{ $role->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td><input class="field min-w-40" type="password" name="password" placeholder="Leave unchanged"></td>
-                                <td class="whitespace-nowrap">
-                                    <button class="text-teal-700" type="submit">Save</button>
-                            </form>
+                                </form>
+                                <input class="field min-w-40" name="name" value="{{ $user->name }}" form="user-update-{{ $user->id }}" required>
+                            </td>
+                            <td><input class="field min-w-52" type="email" name="email" value="{{ $user->email }}" form="user-update-{{ $user->id }}" required></td>
+                            <td>
+                                <select class="field min-w-32" name="role_id" form="user-update-{{ $user->id }}" required>
+                                    @foreach($roles as $role)
+                                        <option value="{{ $role->id }}" @selected($user->role_id === $role->id)>{{ $role->name }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td><input class="field min-w-40" type="password" name="password" form="user-update-{{ $user->id }}" placeholder="Leave unchanged" minlength="8" autocomplete="new-password"></td>
+                            <td class="whitespace-nowrap">
+                                <button class="text-teal-700" type="submit" form="user-update-{{ $user->id }}">Save</button>
                             @if(auth()->id() !== $user->id)
                                 <form class="inline" method="POST" action="{{ route('users.destroy', $user) }}" onsubmit="return confirm('Delete this user?')">
                                     @csrf @method('DELETE')
                                     <button class="text-red-600" type="submit">Delete</button>
                                 </form>
                             @endif
-                                </td>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

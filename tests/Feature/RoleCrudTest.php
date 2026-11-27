@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class RoleCrudTest extends TestCase
@@ -56,6 +57,12 @@ class RoleCrudTest extends TestCase
         $user = User::where('email', 'new-staff@example.com')->firstOrFail();
         $this->assertSame('staff', $user->role);
         $this->assertSame($role->id, $user->role_id);
+        $originalPasswordHash = $user->password;
+
+        $this->actingAs($admin)->get(route('users.index'))
+            ->assertOk()
+            ->assertSee('name="role_id"', false)
+            ->assertSee('name="password"', false);
 
         $manager = Role::where('slug', 'manager')->firstOrFail();
         $this->actingAs($admin)->put(route('users.update', $user), [
@@ -68,6 +75,16 @@ class RoleCrudTest extends TestCase
         $user->refresh();
         $this->assertSame('manager', $user->role);
         $this->assertSame($manager->id, $user->role_id);
+        $this->assertSame($originalPasswordHash, $user->password);
+
+        $this->actingAs($admin)->put(route('users.update', $user), [
+            'name' => 'Updated Staff',
+            'email' => 'new-staff@example.com',
+            'role_id' => $manager->id,
+            'password' => 'replacement-password',
+        ])->assertRedirect();
+
+        $this->assertTrue(Hash::check('replacement-password', $user->fresh()->password));
     }
 
     public function test_viewer_cannot_manage_roles_or_create_users(): void
